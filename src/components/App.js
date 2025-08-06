@@ -1,39 +1,35 @@
 import React, { useState } from "react";
 import Question from "./Question";
-import quiz from "../data/quiz";
+import questions from "../data/questions";
 
 function App() {
-  const [questions, setQuestions] = useState(quiz);
-  const [currentQuestionId, setCurrentQuestion] = useState(1);
-  const [score, setScore] = useState(0);
-  const currentQuestion = questions.find((q) => q.id === currentQuestionId);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState(10);
+  const currentQuestion = questions[currentIndex];
 
-  function handleQuestionAnswered(correct) {
-    if (currentQuestionId < questions.length) {
-      setCurrentQuestion((currentQuestionId) => currentQuestionId + 1);
+  function handleAnswer(isCorrect) {
+    // You can log or track score here if needed
+    console.log("Answered correctly?", isCorrect);
+
+    // Move to the next question
+    const nextIndex = currentIndex + 1;
+    if (nextIndex < questions.length) {
+      setCurrentIndex(nextIndex);
     } else {
-      setCurrentQuestion(null);
+      alert("You've finished all the questions!");
     }
-    if (correct) {
-      setScore((score) => score + 1);
-    }
+    setTimeRemaining(10); // reset timer
   }
 
   return (
     <main>
-      <section>
-        {currentQuestion ? (
-          <Question
-            question={currentQuestion}
-            onAnswered={handleQuestionAnswered}
-          />
-        ) : (
-          <>
-            <h1>Game Over</h1>
-            <h2>Total Correct: {score}</h2>
-          </>
-        )}
-      </section>
+      <Question
+        question={currentQuestion}
+        onAnswered={handleAnswer}
+        timeRemaining={timeRemaining}
+        setTimeRemaining={setTimeRemaining}
+      />
+      <questions/>
     </main>
   );
 }
